@@ -1,0 +1,27 @@
+[package]
+name = "rust-time-communication-hub"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace]
+
+# members = [
+#     "test_consumer",
+# ]
+
+[dependencies]
+anyhow = "1.0.70"
+axum = { version = "0.6.12", features = ["headers"] }
+dotenvy = "0.15.7"
+futures = "0.3.27"
+futures-util = "0.3.27"
+headers = "0.3.8"
+parking_lot = "0.12.1"
+thiserror = "1.0.40"
+tokio = { version = "1.26.0", features = ["full"] }
+tokio-stream = "0.1.12"
+tower-http = { version = "0.4.0", features = ["trace", "cors"] }
+tracing = "0.1.37"
+tracing-subscriber = { version = "0.3.16", features = ["env-filter"] }
