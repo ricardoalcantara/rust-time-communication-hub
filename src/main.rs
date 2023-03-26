@@ -1,15 +1,17 @@
 use crate::hub::Hub;
 use axum::{routing::get, Extension, Router};
 use dotenvy::dotenv;
+use error::AppResult;
 use std::net::SocketAddr;
 use tokio::signal;
 use tower_http::cors::CorsLayer;
 
+mod error;
 mod hub;
 mod sse_handler;
 
 #[tokio::main]
-async fn main() -> Result<(), anyhow::Error> {
+async fn main() -> AppResult {
     dotenv().ok();
 
     tracing_subscriber::fmt()
