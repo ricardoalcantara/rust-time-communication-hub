@@ -1,4 +1,5 @@
 use crate::hub::Hub;
+use crate::hub_manager::{HubManager, MessageType};
 use axum::{routing::get, Extension, Router};
 use dotenvy::dotenv;
 use error::AppResult;
@@ -8,6 +9,7 @@ use tower_http::cors::CorsLayer;
 
 mod error;
 mod hub;
+mod hub_manager;
 mod sse_handler;
 
 #[tokio::main]
@@ -18,7 +20,8 @@ async fn main() -> AppResult {
         .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
         .init();
 
-    let hub = Hub::new();
+    let tx = HubManager::spawn();
+    let hub = Hub::new(tx);
 
     let origin = if let Ok(origin) = std::env::var("ORIGIN") {
         if origin == "*" {

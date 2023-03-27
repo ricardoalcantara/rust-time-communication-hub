@@ -16,6 +16,7 @@ pub struct Params {
     pub user_id: String,
 }
 
+#[debug_handler]
 pub async fn handler(
     Query(params): Query<Params>,
     TypedHeader(user_agent): TypedHeader<headers::UserAgent>,
@@ -35,8 +36,10 @@ pub async fn handler(
 pub async fn notify(Query(params): Query<Params>, Extension(hub): Extension<Hub>) -> StatusCode {
     let user_id = params.user_id;
     println!("{user_id}");
-    hub.notify_user(&user_id, "Hello, world!").await;
-    hub.notify_group("Default", "Hello, world!").await;
+
+    hub.notify_user(user_id, "Hello, world!".to_owned()).await;
+    hub.notify_group("Default".to_owned(), "Hello, world!".to_owned())
+        .await;
 
     StatusCode::NO_CONTENT
 }
