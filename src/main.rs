@@ -1,5 +1,5 @@
 use crate::hub::Hub;
-use crate::hub_manager::{HubManager, MessageType};
+use crate::hub_manager::HubManager;
 use axum::{routing::get, Extension, Router};
 use dotenvy::dotenv;
 use error::AppResult;
