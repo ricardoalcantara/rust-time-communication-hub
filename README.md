@@ -214,19 +214,25 @@ eventSource.onmessage = (e) => { console.log(e.data); }
 #### SSE
 
 <details>
-<summary><code>GET</code> <code><b>/sse</b></code> <code>{{description}}</code></summary>
+<summary><code>GET</code> <code><b>/sse?token={token}</b></code> <code>{{description}}</code></summary>
 
 ##### Parameters
 
-> Empty
+> | name              |  type     | data type      | description                                 |
+> |-------------------|-----------|----------------|---------------------------------------------|
+> | `token`           |  required | string         | The access token provided by the application|
 
 ##### Responses
 
-> Empty
+> | http code     | content-type                      | response                                                            |
+> |---------------|-----------------------------------|---------------------------------------------------------------------|
+> | `200`         | `text/event-stream`               | Server Side Event Stream                                            |
+> | `400`         | `application/json`                | `{"error": ""}`                                                     |
+
 
 ##### Example cURL
 
-> Empty
+> curl -N http://localhost:4500/sse?token=xxx
 
 </details>
 
