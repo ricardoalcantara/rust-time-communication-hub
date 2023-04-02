@@ -1,69 +1,70 @@
+use super::{hub_connection::HubConnection, hub_packet::HubPackage};
 use axum::response::sse::Event;
 use std::{
     collections::HashMap,
     convert::Infallible,
     sync::{Arc, Mutex},
+    time::Duration,
 };
-use tokio::sync::mpsc::Sender;
-
-#[derive(Debug)]
-pub enum MessageType {
-    NotifyUser {
-        user_id: String,
-        message: String,
-    },
-    NotifyGroup {
-        group_id: String,
-        message: String,
-    },
-    AddClient {
-        user_id: String,
-        group_id: Option<String>,
-        client: SseSender,
-    },
-}
+use tokio::{sync::mpsc::Sender, time::interval};
 
 type Db<T> = HashMap<String, Vec<T>>;
 type ArcMutexDb<T> = Arc<Mutex<Db<T>>>;
 type SseSender = Sender<Result<Event, Infallible>>;
 
 #[derive(Debug, Default)]
-pub struct HubManager {
+pub struct HubServer {
     pub users: Db<SseSender>,
     pub groups: Db<String>,
 }
 
-impl HubManager {
+impl HubServer {
     pub fn new() -> Self {
         Default::default()
     }
 
-    pub fn spawn() -> Sender<MessageType> {
-        let (tx, mut rx) = tokio::sync::mpsc::channel::<MessageType>(32);
+    pub fn spawn() -> HubConnection {
+        let (tx, mut rx) = tokio::sync::mpsc::channel::<HubPackage>(32);
 
         tokio::spawn(async move {
-            let mut manager = HubManager::new();
+            let mut manager = HubServer::new();
             while let Some(message) = rx.recv().await {
                 match message {
-                    MessageType::NotifyUser { user_id, message } => {
+                    HubPackage::NotifyUser { user_id, message } => {
                         manager.notify_user(&user_id, &message).await
                     }
-                    MessageType::NotifyGroup { group_id, message } => {
+                    HubPackage::NotifyGroup { group_id, message } => {
                         manager.notify_group(&group_id, &message).await
                     }
-                    MessageType::AddClient {
+                    HubPackage::AddClient {
                         user_id,
                         group_id,
                         client,
-                    } => manager.add_client(user_id, group_id, client),
+                    } => manager.add_client(user_id, group_id, client).await,
                 }
             }
         });
 
-        tx
+        let tx_clone = tx.clone();
+        tokio::spawn(async move {
+            let tx = tx_clone;
+            let mut interval = interval(Duration::from_secs(10));
+            loop {
+                interval.tick().await;
+
+                tx.send(HubPackage::NotifyGroup {
+                    group_id: "Default".to_owned(),
+                    message: "ping".to_owned(),
+                })
+                .await
+                .unwrap();
+            }
+        });
+
+        HubConnection::new(tx)
     }
 
-    fn add_client(
+    async fn add_client(
         &mut self,
         user_id: String,
         group_id: Option<String>,
@@ -74,6 +75,8 @@ impl HubManager {
         if let Some(user_idx) = self.users.get_mut(&user_id) {
             user_idx.push(tx);
         }
+
+        self.notify_user(&user_id, "Hi!").await;
     }
 
     fn add_user(&mut self, user_id: String, group_id: Option<String>) {
@@ -107,6 +110,8 @@ impl HubManager {
                 for client in clients {
                     if client.send(Ok(Event::default().data(msg))).await.is_ok() {
                         ok_clients.push(client.clone());
+                    } else {
+                        eprintln!("Sse disconected");
                     }
                 }
             } else {
