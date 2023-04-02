@@ -22,11 +22,6 @@ eventSource.onmessage = (e) => { console.log(e.data); }
 
 > None
 
-> | name      |  type     | data type               | description                                                           |
-> |-----------|-----------|-------------------------|-----------------------------------------------------------------------|
-> | client_id      |  required | object JSON    | N/A  |
-> | client_secret      |  required | object JSON    | N/A  |
-
 ##### Payload
 
 ```json
