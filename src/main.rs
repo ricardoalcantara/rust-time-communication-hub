@@ -1,15 +1,10 @@
 #![allow(unused)]
-use crate::{
+use dotenvy::dotenv;
+use rust_time_communication_hub::{
+    error::AppResult,
     hub::hub_server::HubServer,
     servers::{server_admin, server_sse},
 };
-use dotenvy::dotenv;
-use error::AppResult;
-
-mod domain;
-mod error;
-mod hub;
-mod servers;
 
 #[tokio::main]
 async fn main() -> AppResult {

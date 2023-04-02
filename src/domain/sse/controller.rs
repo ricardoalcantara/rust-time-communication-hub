@@ -8,24 +8,30 @@ use serde::Deserialize;
 use std::{convert::Infallible, time::Duration};
 use tokio_stream::{wrappers::ReceiverStream, StreamExt as _};
 
-use crate::hub::hub_connection::{self, HubConnection};
+use crate::{
+    core::jwt::Jwt,
+    domain::{auth::dto::claims::Claims, dto::error::HttpResult},
+    hub::hub_connection::{self, HubConnection},
+};
 
 // TODO: Temporary
 #[derive(Deserialize)]
 pub struct Params {
-    pub user_id: String,
+    pub token: String,
 }
 
 pub async fn sse(
     Query(params): Query<Params>,
     Extension(hub_connection): Extension<HubConnection>,
-) -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
-    tracing::info!("`{}` connected", &params.user_id);
+) -> HttpResult<Sse<impl Stream<Item = Result<Event, Infallible>>>> {
+    let claims: Claims = Jwt::from_env("JWT_SSE_USER_SECRET").decode(&params.token)?;
+
+    tracing::info!("`{}` connected", &claims.sub);
     let rx = hub_connection
-        .new_client(params.user_id, Some("Default".to_owned()))
+        .new_client(claims.sub, Some("Default".to_owned()))
         .await;
 
     let stream = ReceiverStream::<Result<Event, Infallible>>::new(rx);
 
-    Sse::new(stream).keep_alive(KeepAlive::default())
+    Ok(Sse::new(stream).keep_alive(KeepAlive::default()))
 }

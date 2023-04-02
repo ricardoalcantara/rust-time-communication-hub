@@ -1,9 +1,15 @@
+use crate::common::api_client::ApiClient;
 use futures::stream::StreamExt;
 use reqwest_eventsource::{Event, EventSource};
 
+mod common;
+
 #[tokio::test]
 async fn connect_sse_sucess() {
-    let mut es = EventSource::get("http://localhost:4500/sse?user_id=rust");
+    let client = ApiClient::new();
+    let response = client.auth_token().await;
+    let response_token = response.json().await;
+    let mut es = client.get_event_source(response_token.access_token);
     let event = es.next().await.unwrap();
 
     assert!(event.is_ok());
@@ -12,7 +18,10 @@ async fn connect_sse_sucess() {
 
 #[tokio::test]
 async fn connect_sse_ping_sucess() {
-    let mut es = EventSource::get("http://localhost:4500/sse?user_id=rust");
+    let client = ApiClient::new();
+    let response = client.auth_token().await;
+    let response_token = response.json().await;
+    let mut es = client.get_event_source(response_token.access_token);
     let event = es.next().await.unwrap();
     assert_eq!(Event::Open, event.unwrap());
     let event = es.next().await.unwrap();
