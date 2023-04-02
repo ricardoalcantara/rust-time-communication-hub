@@ -1,13 +1,4 @@
-use axum::{
-    http::StatusCode,
-    response::{
-        sse::{Event, KeepAlive, Sse},
-        IntoResponse,
-    },
-    Json,
-};
-use futures_util::stream::{self, Stream};
-use std::{convert::Infallible, time::Duration};
+use axum::{http::StatusCode, response::IntoResponse, Json};
 
 use crate::{core::jwt::Jwt, domain::dto::error::HttpResult};
 

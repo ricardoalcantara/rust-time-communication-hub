@@ -1,4 +1,3 @@
-#![allow(unused)]
 use dotenvy::dotenv;
 use rust_time_communication_hub::{
     error::AppResult,

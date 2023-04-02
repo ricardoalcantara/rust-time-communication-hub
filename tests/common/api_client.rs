@@ -1,3 +1,4 @@
+#![allow(unused)]
 use reqwest::{Method, RequestBuilder, Response, StatusCode};
 use reqwest_eventsource::EventSource;
 use rust_time_communication_hub::domain::{

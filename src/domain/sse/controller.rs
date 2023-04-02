@@ -1,18 +1,17 @@
+use crate::{
+    core::jwt::Jwt,
+    domain::{auth::dto::claims::Claims, dto::error::HttpResult},
+    hub::hub_connection::HubConnection,
+};
 use axum::{
     extract::Query,
     response::sse::{Event, KeepAlive, Sse},
     Extension,
 };
-use futures_util::stream::{self, Stream};
+use futures_util::stream::Stream;
 use serde::Deserialize;
-use std::{convert::Infallible, time::Duration};
-use tokio_stream::{wrappers::ReceiverStream, StreamExt as _};
-
-use crate::{
-    core::jwt::Jwt,
-    domain::{auth::dto::claims::Claims, dto::error::HttpResult},
-    hub::hub_connection::{self, HubConnection},
-};
+use std::convert::Infallible;
+use tokio_stream::wrappers::ReceiverStream;
 
 // TODO: Temporary
 #[derive(Deserialize)]
