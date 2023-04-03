@@ -1,11 +1,6 @@
 use axum::response::sse::Event;
-use std::{
-    collections::HashMap,
-    convert::Infallible,
-    sync::{Arc, Mutex},
-    time::Duration,
-};
-use tokio::{sync::mpsc::Sender, time::interval};
+use std::convert::Infallible;
+use tokio::sync::mpsc::Sender;
 
 type SseClient = Sender<Result<Event, Infallible>>;
 

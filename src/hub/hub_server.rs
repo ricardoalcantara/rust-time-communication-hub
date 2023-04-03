@@ -1,3 +1,4 @@
+#![allow(unused)]
 use super::{hub_connection::HubConnection, hub_packet::HubPackage};
 use axum::response::sse::Event;
 use std::{

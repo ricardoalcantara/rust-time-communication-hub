@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use axum::{
+    extract::rejection::TypedHeaderRejection,
     http::StatusCode,
     response::{IntoResponse, Response},
     Json,
@@ -82,5 +83,12 @@ impl From<jsonwebtoken::errors::Error> for HttpError {
     fn from(error: jsonwebtoken::errors::Error) -> Self {
         tracing::error!("{error}");
         HttpError::bad_request("Invalid token")
+    }
+}
+
+impl From<TypedHeaderRejection> for HttpError {
+    fn from(error: TypedHeaderRejection) -> Self {
+        tracing::debug!("{error}");
+        HttpError::bad_request("Missing credentials")
     }
 }

@@ -35,7 +35,7 @@ eventSource.onmessage = (e) => { console.log(e.data); }
 
 > | http code     | content-type                      | response                                                            |
 > |---------------|-----------------------------------|---------------------------------------------------------------------|
-> | `200`         | `application/json`                | `{"access_token":"xxx","type":"bearer"}`                                |
+> | `200`         | `application/json`                | `{"access_token":"xxx","type":"Bearer"}`                                |
 > | `400`         | `application/json`                | `{"error":"Invalid client credentials"}`                            |
 
 ##### Example cURL
