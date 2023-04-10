@@ -1,6 +1,9 @@
 use crate::{
     core::jwt::Jwt,
-    domain::{auth::dto::claims::Claims, dto::error::HttpResult},
+    domain::{
+        auth::dto::claims::Claims,
+        dto::error::{HttpError, HttpResult},
+    },
     hub::hub_connection::HubConnection,
 };
 use axum::{
@@ -23,7 +26,9 @@ pub async fn sse(
     Query(params): Query<Params>,
     Extension(hub_connection): Extension<HubConnection>,
 ) -> HttpResult<Sse<impl Stream<Item = Result<Event, Infallible>>>> {
-    let claims: Claims = Jwt::from_env("JWT_SSE_USER_SECRET").decode(&params.token)?;
+    let claims: Claims = Jwt::from_env("JWT_SSE_USER_SECRET")
+        .decode(&params.token)
+        .map_err(|_| HttpError::unauthorized("Invalid token"))?;
 
     tracing::info!("`{}` connected", &claims.sub);
     let rx = hub_connection

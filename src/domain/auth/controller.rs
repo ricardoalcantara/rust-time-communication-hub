@@ -30,7 +30,9 @@ pub async fn token(
     let jti = uuid::Uuid::new_v4().to_string();
     let claims = Claims { jti, sub, exp };
 
-    let access_token = Jwt::from_env("JWT_SECRET").encode(claims)?;
+    let access_token = Jwt::from_env("JWT_SECRET")
+        .encode(claims)
+        .map_err(|_| HttpError::internal_server_error("Jwt encode error"))?;
 
     let access_token = AccessToken {
         access_token,

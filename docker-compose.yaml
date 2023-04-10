@@ -1,0 +1,16 @@
+services:
+  mariadb:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_USER: user
+      MARIADB_PASSWORD: pass
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: rust_time_communication_hub
+    ports: 
+      - 3306:3306
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
