@@ -13,6 +13,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.70"
+async-trait = "0.1.68"
 axum = { version = "0.6.12", features = ["headers"] }
 axum-macros = "0.3.7"
 chrono = "0.4.24"
@@ -24,6 +25,14 @@ hyper = "0.14.25"
 jsonwebtoken = "8.3.0"
 parking_lot = "0.12.1"
 serde = { version = "1.0.158", features = ["derive"] }
+sqlx = { version = "0.6.3", features = [
+    "runtime-tokio-native-tls",
+    "any",
+    "sqlite",
+    "postgres",
+    "mysql",
+    "chrono",
+] }
 thiserror = "1.0.40"
 tokio = { version = "1.26.0", features = ["full"] }
 tokio-stream = "0.1.12"

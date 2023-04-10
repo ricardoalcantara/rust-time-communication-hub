@@ -1,11 +1,12 @@
 use crate::error::AppResult;
+use crate::repository::repository_base::RepositoryBase;
 use crate::servers::shutdown_signal;
 use crate::{domain, hub::hub_connection::HubConnection};
 use axum::{routing::get, Extension, Router};
 use std::net::SocketAddr;
 use tower_http::cors::CorsLayer;
 
-pub async fn start(hub_connection: HubConnection) -> AppResult {
+pub async fn start(hub_connection: HubConnection, repository: RepositoryBase) -> AppResult {
     let origin = if let Ok(origin) = std::env::var("ORIGIN") {
         if origin == "*" {
             tower_http::cors::AllowOrigin::mirror_request()
@@ -19,6 +20,7 @@ pub async fn start(hub_connection: HubConnection) -> AppResult {
     let app = Router::new()
         .route("/", get(handler))
         .merge(domain::sse::route())
+        .layer(Extension(repository))
         .layer(Extension(hub_connection))
         .layer(
             CorsLayer::new()

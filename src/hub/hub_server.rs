@@ -1,4 +1,6 @@
 #![allow(unused)]
+use crate::repository::repository_base::RepositoryBase;
+
 use super::{hub_connection::HubConnection, hub_packet::HubPackage};
 use axum::response::sse::Event;
 use std::{
@@ -13,22 +15,26 @@ type Db<T> = HashMap<String, Vec<T>>;
 type ArcMutexDb<T> = Arc<Mutex<Db<T>>>;
 type SseSender = Sender<Result<Event, Infallible>>;
 
-#[derive(Debug, Default)]
 pub struct HubServer {
     pub users: Db<SseSender>,
     pub groups: Db<String>,
+    repository: RepositoryBase,
 }
 
 impl HubServer {
-    pub fn new() -> Self {
-        Default::default()
+    pub fn new(repository: RepositoryBase) -> Self {
+        HubServer {
+            repository,
+            users: HashMap::new(),
+            groups: HashMap::new(),
+        }
     }
 
-    pub fn spawn() -> HubConnection {
+    pub fn spawn(repository: RepositoryBase) -> HubConnection {
         let (tx, mut rx) = tokio::sync::mpsc::channel::<HubPackage>(32);
 
         tokio::spawn(async move {
-            let mut manager = HubServer::new();
+            let mut manager = HubServer::new(repository);
             while let Some(message) = rx.recv().await {
                 match message {
                     HubPackage::NotifyUser { user_id, message } => {

@@ -1,6 +1,8 @@
 use std::{convert::Infallible, panic::Location};
 use thiserror::Error;
 
+use crate::repository::repository_base::RepositoryError;
+
 pub type AppResult<T = ()> = anyhow::Result<T, AppError>;
 
 #[derive(Debug, Error)]
@@ -22,6 +24,8 @@ pub enum AppError {
     },
     #[error(transparent)]
     Infallible(#[from] Infallible),
+    #[error(transparent)]
+    RepositoryError(#[from] RepositoryError),
 }
 
 impl From<std::io::Error> for AppError {

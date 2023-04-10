@@ -8,6 +8,8 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 
+use crate::repository::repository_base::RepositoryError;
+
 #[derive(Serialize, Deserialize)]
 pub struct ErrorResponse<T> {
     pub error: String,
@@ -90,5 +92,12 @@ impl From<TypedHeaderRejection> for HttpError {
     fn from(error: TypedHeaderRejection) -> Self {
         tracing::debug!("{error}");
         HttpError::bad_request("Missing credentials")
+    }
+}
+
+impl From<RepositoryError> for HttpError {
+    fn from(error: RepositoryError) -> Self {
+        tracing::debug!("{error}");
+        HttpError::bad_request("Database error")
     }
 }
