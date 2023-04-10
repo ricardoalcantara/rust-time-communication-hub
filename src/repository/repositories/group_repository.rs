@@ -1,5 +1,5 @@
 use crate::repository::{
-    models::group::Group,
+    models::group::{Group, UpdateGroup},
     repository_base::{RepositoryBase, RepositoryResult},
 };
 use async_trait::async_trait;
@@ -10,7 +10,7 @@ pub trait GroupRepository {
     async fn group_insert_if_not_exists(&self, group: &Group) -> RepositoryResult<i32>;
     async fn group_exists(&self, name: &str) -> RepositoryResult<Option<i32>>;
     async fn group_delete(&self, id: i32) -> RepositoryResult<bool>;
-    async fn group_update(&self, group: &Group) -> RepositoryResult<bool>;
+    async fn group_update(&self, group: &UpdateGroup) -> RepositoryResult<bool>;
     async fn group_select(&self, id: i32) -> RepositoryResult<Option<Group>>;
 }
 
@@ -57,7 +57,7 @@ impl GroupRepository for RepositoryBase {
         Ok(rows_affected > 0)
     }
 
-    async fn group_update(&self, group: &Group) -> RepositoryResult<bool> {
+    async fn group_update(&self, group: &UpdateGroup) -> RepositoryResult<bool> {
         let rows_affected = sqlx::query!(
             r#"
     UPDATE `group`

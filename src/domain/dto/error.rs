@@ -50,54 +50,47 @@ impl HttpError {
     pub fn bad_request(message: &str) -> HttpError {
         HttpError::new_message(String::from(message), StatusCode::BAD_REQUEST)
     }
+
+    pub fn internal_server_error(message: &str) -> HttpError {
+        HttpError::new_message(String::from(message), StatusCode::INTERNAL_SERVER_ERROR)
+    }
+
+    pub fn unauthorized(message: &str) -> HttpError {
+        HttpError::new_message(String::from(message), StatusCode::UNAUTHORIZED)
+    }
 }
 
 impl IntoResponse for HttpError {
     fn into_response(self) -> Response {
-        if let Some(mut error) = self.message {
-            let error_message = if error.len() > 0 && error.contains_key("message") {
+        let mut detail = self.message;
+        let error_message = if let Some(error) = detail.as_mut() {
+            if !error.is_empty() && error.contains_key("message") {
                 error.remove("message").unwrap()
             } else {
                 format!("{}", self.status_code)
-            };
-
-            let detail = if error.len() > 0 { Some(error) } else { None };
-
-            let body = Json(ErrorResponse {
-                error: error_message,
-                detail,
-            });
-            (self.status_code, body).into_response()
+            }
         } else {
-            (self.status_code).into_response()
-        }
+            format!("{}", self.status_code)
+        };
+
+        let body = Json(ErrorResponse {
+            error: error_message,
+            detail,
+        });
+        (self.status_code, body).into_response()
     }
 }
 
 impl From<std::env::VarError> for HttpError {
     fn from(error: std::env::VarError) -> Self {
         tracing::error!("{error}");
-        HttpError::status_code(StatusCode::INTERNAL_SERVER_ERROR)
-    }
-}
-
-impl From<jsonwebtoken::errors::Error> for HttpError {
-    fn from(error: jsonwebtoken::errors::Error) -> Self {
-        tracing::error!("{error}");
-        HttpError::bad_request("Invalid token")
-    }
-}
-
-impl From<TypedHeaderRejection> for HttpError {
-    fn from(error: TypedHeaderRejection) -> Self {
-        tracing::debug!("{error}");
-        HttpError::bad_request("Missing credentials")
+        HttpError::internal_server_error("EnvVar error")
     }
 }
 
 impl From<RepositoryError> for HttpError {
     fn from(error: RepositoryError) -> Self {
         tracing::debug!("{error}");
-        HttpError::bad_request("Database error")
+        HttpError::internal_server_error("Repository error")
     }
 }

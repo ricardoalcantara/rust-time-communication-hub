@@ -23,11 +23,15 @@ where
     type Rejection = HttpError;
 
     async fn from_request_parts(req: &mut Parts, _state: &B) -> Result<Self, Self::Rejection> {
-        let TypedHeader(Authorization(bearer)) =
-            req.extract::<TypedHeader<Authorization<Bearer>>>().await?;
+        let TypedHeader(Authorization(bearer)) = req
+            .extract::<TypedHeader<Authorization<Bearer>>>()
+            .await
+            .map_err(|_| HttpError::unauthorized("Missing credentials"))?;
 
         let token = bearer.token();
-        let claims: Claims = Jwt::new().decode(token)?;
+        let claims: Claims = Jwt::new()
+            .decode(token)
+            .map_err(|_| HttpError::unauthorized("Invalid token"))?;
         Ok(claims)
     }
 }

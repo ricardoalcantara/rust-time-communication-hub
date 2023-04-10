@@ -10,7 +10,7 @@ pub trait UserRepository {
     async fn user_insert_if_not_exists(&self, user: &User) -> RepositoryResult<i32>;
     async fn user_exists(&self, external_id: &str) -> RepositoryResult<Option<i32>>;
     async fn user_delete(&self, id: i32) -> RepositoryResult<bool>;
-    async fn user_update(&self, user: &User) -> RepositoryResult<bool>;
+    // async fn user_update(&self, user: &UpdateUser) -> RepositoryResult<bool>;
     async fn user_select(&self, id: i32) -> RepositoryResult<Option<User>>;
 }
 
@@ -54,23 +54,6 @@ impl UserRepository for RepositoryBase {
             .execute(&self.pool)
             .await?
             .rows_affected();
-
-        Ok(rows_affected > 0)
-    }
-
-    async fn user_update(&self, user: &User) -> RepositoryResult<bool> {
-        let rows_affected = sqlx::query!(
-            r#"
-    UPDATE user
-    SET external_id = ?
-    WHERE id = ?
-            "#,
-            user.external_id,
-            user.id
-        )
-        .execute(&self.pool)
-        .await?
-        .rows_affected();
 
         Ok(rows_affected > 0)
     }
