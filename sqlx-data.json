@@ -1,0 +1,298 @@
+{
+  "db": "MySQL",
+  "025f87b4fe6f4a638cd7e1fb97601fad72022dad18375d49d302c4dfc3dbf45e": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "DELETE FROM message WHERE id = ?"
+  },
+  "02a7b61948ac8f289944d4745be89360012be2d2864a7b5407a80d1391f2929c": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "\n    INSERT INTO user ( external_id, created_at )\n    VALUES ( ?, ? )\n            "
+  },
+  "0f1475ff30b81fb82fb9f8c84c766b105db4912a88c9b1eba0449be3870a94e7": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "DELETE FROM user WHERE id = ?"
+  },
+  "2384540dce7cb94e1b667f5560021bae1aba009ee390afecd1279656242c7643": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 515
+            },
+            "max_size": 11,
+            "type": "Long"
+          }
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT id FROM `group` WHERE name = ?"
+  },
+  "4311f115400a13a4c25e29f520c1074c48bfa7b0ef6ec247449d8aaab111549c": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "\n    INSERT INTO `group` ( name )\n    VALUES ( ? )\n            "
+  },
+  "44aa7df811f50f8bb6bfe538c13d75f24ad901dd6bf4025510c737663145945c": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 515
+            },
+            "max_size": 11,
+            "type": "Long"
+          }
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT id FROM user WHERE external_id = ?"
+  },
+  "589676211bc3052c259d0a421c95a04a556c834a9d97275ed85d58635331f4f8": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 515
+            },
+            "max_size": 11,
+            "type": "Long"
+          }
+        },
+        {
+          "name": "payload",
+          "ordinal": 1,
+          "type_info": {
+            "char_set": 224,
+            "flags": {
+              "bits": 4097
+            },
+            "max_size": 1020,
+            "type": "VarString"
+          }
+        },
+        {
+          "name": "created_at",
+          "ordinal": 2,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 4225
+            },
+            "max_size": 19,
+            "type": "Datetime"
+          }
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT * FROM message WHERE id = ?"
+  },
+  "8bf5d792922fe5640430c6181a55e9f5e460424b70d3030b7fa0ba69afd69815": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "\n    INSERT INTO message ( payload, created_at )\n    VALUES ( ?, ? )\n            "
+  },
+  "9ad3a03475c567cccb7ba0bf1c76de0b83c7f5017fff9c74249fa342bc486be9": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "\n    UPDATE `group`\n    SET name = ?\n    WHERE id = ?\n            "
+  },
+  "b9ec2211672bc544b95281318be44056c7e74dc07c5914d9fbbfd46b3e1cffb9": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 515
+            },
+            "max_size": 11,
+            "type": "Long"
+          }
+        },
+        {
+          "name": "external_id",
+          "ordinal": 1,
+          "type_info": {
+            "char_set": 224,
+            "flags": {
+              "bits": 4101
+            },
+            "max_size": 1020,
+            "type": "VarString"
+          }
+        },
+        {
+          "name": "created_at",
+          "ordinal": 2,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 4225
+            },
+            "max_size": 19,
+            "type": "Datetime"
+          }
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT * FROM user WHERE id = ?"
+  },
+  "d42ae8823768cd72acc6cbabebf74887cac0289a29079b4301b109d25273dcc2": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 515
+            },
+            "max_size": 11,
+            "type": "Long"
+          }
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": {
+            "char_set": 224,
+            "flags": {
+              "bits": 4101
+            },
+            "max_size": 1020,
+            "type": "VarString"
+          }
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT * FROM `group` WHERE id = ?"
+  },
+  "d992dd345be0b66b25750b5475ccb318a9e77e08d085636254bc022f04d2b29e": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "DELETE FROM `group` WHERE id = ?"
+  },
+  "e81fd8961c3855f09d0676e29252ac8bcd131b5574bf766f6a09ce17b82335f8": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "\n    UPDATE message\n    SET payload = ?\n    WHERE id = ?\n            "
+  },
+  "fffae752d222228bcf38f71c8e5ad1b13bf97458f4d846a0e2ebd6099cc164ab": {
+    "describe": {
+      "columns": [
+        {
+          "name": "test",
+          "ordinal": 0,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 129
+            },
+            "max_size": 1,
+            "type": "Long"
+          }
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Right": 0
+      }
+    },
+    "query": "SELECT (1) as test"
+  }
+}

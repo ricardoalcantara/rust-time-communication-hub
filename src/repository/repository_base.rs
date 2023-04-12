@@ -25,14 +25,24 @@ pub type RepositoryResult<T = ()> = Result<T, RepositoryError>;
 
 #[derive(Clone)]
 pub struct RepositoryBase {
+    #[cfg(feature = "mysql")]
     pub pool: sqlx::MySqlPool,
+    #[cfg(feature = "postgres")]
+    pub pool: sqlx::MySqlPool,
+    #[cfg(feature = "sqlite")]
+    pub pool: sqlx::sqlite::SqlitePool,
 }
 
 impl RepositoryBase {
     pub async fn new() -> Result<RepositoryBase, RepositoryError> {
         let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
+        #[cfg(feature = "mysql")]
         let pool = sqlx::MySqlPool::connect(&database_url).await?;
+        #[cfg(feature = "postgres")]
+        let pool = sqlx::postgres::PgPool::connect(&database_url).await?;
+        #[cfg(feature = "sqlite")]
+        let pool = sqlx::sqlite::SqlitePool::connect(&database_url).await?;
 
         let repository = RepositoryBase { pool };
 

@@ -5,7 +5,7 @@ pub struct Jwt {
 
 impl Jwt {
     pub fn from_env(name: &str) -> Self {
-        let secret = std::env::var(name).expect(&format!("{} must be set", name));
+        let secret = std::env::var(name).unwrap_or_else(|_| panic!("{} must be set", name));
         let algorithm = jsonwebtoken::Algorithm::HS512;
         Jwt {
             secret: secret.into_bytes(),

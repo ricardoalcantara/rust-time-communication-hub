@@ -10,6 +10,21 @@ const eventSource = new EventSource("http://localhost:4500/sse?user_id=ricardo")
 eventSource.onmessage = (e) => { console.log(e.data); }
 ```
 
+## Offline Mode (requires the offline feature)
+
+The macros can be configured to not require a live database connection for compilation, but it requires a couple extra steps:
+
+  - Run `cargo install sqlx-cli`.
+  - In your project with DATABASE_URL set (or in a .env file) and the database server running, run `cargo sqlx prepare`.
+  - Check the generated sqlx-data.json file into version control.
+  - Don’t have DATABASE_URL set during compilation.
+
+Your project can now be built without a database connection (you must omit DATABASE_URL or else it will still try to connect). To update the generated file simply run `cargo sqlx prepare` again.
+
+To ensure that your sqlx-data.json file is kept up-to-date, both with the queries in your project and your database schema itself, run `cargo install sqlx-cli && cargo sqlx prepare --check` in your Continuous Integration script.
+
+See the README for sqlx-cli for more information.
+
 
 ------------------------------------------------------------------------------------------
 
