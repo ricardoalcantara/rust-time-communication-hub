@@ -94,23 +94,23 @@ impl MessageRepository for RepositoryBase {
 #[async_trait]
 impl MessageRepository for RepositoryBase {
     async fn message_insert(&self, message: &Message) -> RepositoryResult<i32> {
-        let message_id = sqlx::query!(
+        let rec = sqlx::query!(
             r#"
-    INSERT INTO message ( payload, created_at )
-    VALUES ( ?, ? )
+    INSERT INTO public.message ( payload, created_at )
+    VALUES ( $1, $2 )
+    RETURNING id
             "#,
             message.payload,
             message.created_at
         )
-        .execute(&self.pool)
-        .await?
-        .last_insert_id();
+        .fetch_one(&self.pool)
+        .await?;
 
-        Ok(message_id as i32)
+        Ok(rec.id as i32)
     }
 
     async fn message_delete(&self, id: i32) -> RepositoryResult<bool> {
-        let rows_affected = sqlx::query!("DELETE FROM message WHERE id = ?", id)
+        let rows_affected = sqlx::query!("DELETE FROM public.message WHERE id = $1", id)
             .execute(&self.pool)
             .await?
             .rows_affected();
@@ -121,9 +121,9 @@ impl MessageRepository for RepositoryBase {
     async fn message_update(&self, message: &UpdateMessage) -> RepositoryResult<bool> {
         let rows_affected = sqlx::query!(
             r#"
-    UPDATE message
-    SET payload = ?
-    WHERE id = ?
+    UPDATE public.message
+    SET payload = $1
+    WHERE id = $2
             "#,
             message.payload,
             message.id
@@ -136,7 +136,7 @@ impl MessageRepository for RepositoryBase {
     }
 
     async fn message_select(&self, id: i32) -> RepositoryResult<Option<Message>> {
-        let row = sqlx::query_as!(Message, "SELECT * FROM message WHERE id = ?", id)
+        let row = sqlx::query_as!(Message, "SELECT * FROM public.message WHERE id = $1", id)
             .fetch_optional(&self.pool)
             .await?;
 
@@ -150,10 +150,10 @@ impl MessageRepository for RepositoryBase {
         let recs = sqlx::query_as!(
             Message,
             r#"
-        SELECT m.* from message m 
-        INNER JOIN user_message um on um.message_id = m.id 
-        INNER JOIN `user` u on u.id = um.user_id  
-        WHERE u.external_id = ? 
+        SELECT m.* from public.message m 
+        INNER JOIN public.user_message um on um.message_id = m.id 
+        INNER JOIN public.user u on u.id = um.user_id  
+        WHERE u.external_id = $1 
             "#,
             external_id
         )

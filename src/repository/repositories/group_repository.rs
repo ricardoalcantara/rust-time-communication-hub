@@ -115,18 +115,18 @@ impl GroupRepository for RepositoryBase {
 #[async_trait]
 impl GroupRepository for RepositoryBase {
     async fn group_insert(&self, group: &Group) -> RepositoryResult<i32> {
-        let group_id = sqlx::query!(
+        let rec = sqlx::query!(
             r#"
-    INSERT INTO `group` ( name )
-    VALUES ( ? )
+    INSERT INTO public.group ( name )
+    VALUES ( $1 )
+    RETURNING id
             "#,
             group.name,
         )
-        .execute(&self.pool)
-        .await?
-        .last_insert_id();
+        .fetch_one(&self.pool)
+        .await?;
 
-        Ok(group_id as i32)
+        Ok(rec.id as i32)
     }
 
     async fn group_insert_if_not_exists(&self, group: &Group) -> RepositoryResult<i32> {
@@ -138,7 +138,7 @@ impl GroupRepository for RepositoryBase {
     }
 
     async fn group_exists(&self, name: &str) -> RepositoryResult<Option<i32>> {
-        let row = sqlx::query!("SELECT id FROM `group` WHERE name = ?", name)
+        let row = sqlx::query!("SELECT id FROM public.group WHERE name = $1", name)
             .fetch_optional(&self.pool)
             .await?;
 
@@ -146,7 +146,7 @@ impl GroupRepository for RepositoryBase {
     }
 
     async fn group_delete(&self, id: i32) -> RepositoryResult<bool> {
-        let rows_affected = sqlx::query!("DELETE FROM `group` WHERE id = ?", id)
+        let rows_affected = sqlx::query!("DELETE FROM public.group WHERE id = $1", id)
             .execute(&self.pool)
             .await?
             .rows_affected();
@@ -157,9 +157,9 @@ impl GroupRepository for RepositoryBase {
     async fn group_update(&self, group: &UpdateGroup) -> RepositoryResult<bool> {
         let rows_affected = sqlx::query!(
             r#"
-    UPDATE `group`
-    SET name = ?
-    WHERE id = ?
+    UPDATE public.group
+    SET name = $1
+    WHERE id = $2
             "#,
             group.name,
             group.id,
@@ -172,7 +172,7 @@ impl GroupRepository for RepositoryBase {
     }
 
     async fn group_select(&self, id: i32) -> RepositoryResult<Option<Group>> {
-        let row = sqlx::query_as!(Group, "SELECT * FROM `group` WHERE id = ?", id)
+        let row = sqlx::query_as!(Group, "SELECT * FROM public.group WHERE id = $1", id)
             .fetch_optional(&self.pool)
             .await?;
 
@@ -187,10 +187,10 @@ impl GroupRepository for RepositoryBase {
         let rows_affected = sqlx::query!(
             r#"
             INSERT INTO user_message (user_id, message_id) 
-            SELECT u.id, ? FROM `user` u
-            INNER JOIN `user_group` ug ON ug.user_id = u.id 
-            INNER JOIN `group` g  ON g.id  = ug.group_id
-            WHERE g.name = ?
+            SELECT u.id, $1 FROM public.user u
+            INNER JOIN public.user_group ug ON ug.user_id = u.id 
+            INNER JOIN public.group g  ON g.id  = ug.group_id
+            WHERE g.name = $2
             "#,
             message_id,
             group_name,

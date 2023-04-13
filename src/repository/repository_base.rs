@@ -28,7 +28,7 @@ pub struct RepositoryBase {
     #[cfg(feature = "mysql")]
     pub pool: sqlx::MySqlPool,
     #[cfg(feature = "postgres")]
-    pub pool: sqlx::MySqlPool,
+    pub pool: sqlx::postgres::PgPool,
     #[cfg(feature = "sqlite")]
     pub pool: sqlx::sqlite::SqlitePool,
 }
@@ -56,7 +56,10 @@ impl RepositoryBase {
             .fetch_one(&self.pool)
             .await?;
 
+        #[cfg(feature = "mysql")]
         assert_eq!(1, result.test);
+        #[cfg(feature = "postgres")]
+        assert_eq!(Some(1), result.test);
         tracing::debug!("Database connected");
 
         Ok(())

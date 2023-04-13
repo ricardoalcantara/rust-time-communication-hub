@@ -105,19 +105,19 @@ impl UserRepository for RepositoryBase {
 #[async_trait]
 impl UserRepository for RepositoryBase {
     async fn user_insert(&self, user: &User) -> RepositoryResult<i32> {
-        let user_id = sqlx::query!(
+        let rec = sqlx::query!(
             r#"
-    INSERT INTO user ( external_id, created_at )
-    VALUES ( ?, ? )
+    INSERT INTO public.user ( external_id, created_at )
+    VALUES ( $1, $2 )
+    RETURNING id
             "#,
             user.external_id,
             user.created_at
         )
-        .execute(&self.pool)
-        .await?
-        .last_insert_id();
+        .fetch_one(&self.pool)
+        .await?;
 
-        Ok(user_id as i32)
+        Ok(rec.id as i32)
     }
 
     async fn user_insert_if_not_exists(&self, user: &User) -> RepositoryResult<i32> {
@@ -129,15 +129,18 @@ impl UserRepository for RepositoryBase {
     }
 
     async fn user_get_id(&self, external_id: &str) -> RepositoryResult<Option<i32>> {
-        let row = sqlx::query!("SELECT id FROM user WHERE external_id = ?", external_id)
-            .fetch_optional(&self.pool)
-            .await?;
+        let row = sqlx::query!(
+            "SELECT id FROM public.user WHERE external_id = $1",
+            external_id
+        )
+        .fetch_optional(&self.pool)
+        .await?;
 
         Ok(row.map(|r| r.id))
     }
 
     async fn user_delete(&self, id: i32) -> RepositoryResult<bool> {
-        let rows_affected = sqlx::query!("DELETE FROM user WHERE id = ?", id)
+        let rows_affected = sqlx::query!("DELETE FROM public.user WHERE id = $1", id)
             .execute(&self.pool)
             .await?
             .rows_affected();
@@ -146,7 +149,7 @@ impl UserRepository for RepositoryBase {
     }
 
     async fn user_select(&self, id: i32) -> RepositoryResult<Option<User>> {
-        let row = sqlx::query_as!(User, "SELECT * FROM user WHERE id = ?", id)
+        let row = sqlx::query_as!(User, "SELECT * FROM public.user WHERE id = $1", id)
             .fetch_optional(&self.pool)
             .await?;
 
@@ -156,8 +159,8 @@ impl UserRepository for RepositoryBase {
     async fn user_attach_message(&self, id: i32, message_id: i32) -> RepositoryResult<u64> {
         let rows_affected = sqlx::query!(
             r#"
-            INSERT INTO user_message (user_id, message_id)
-            VALUES ( ? ,? )
+            INSERT INTO public.user_message (user_id, message_id)
+            VALUES ( $1, $2 )
             "#,
             id,
             message_id,
@@ -172,8 +175,8 @@ impl UserRepository for RepositoryBase {
     async fn user_attach_group(&self, id: i32, group_id: i32) -> RepositoryResult<u64> {
         let rows_affected = sqlx::query!(
             r#"
-            INSERT INTO user_group (user_id, group_id)
-            VALUES ( ? ,? )
+            INSERT INTO public.user_group (user_id, group_id)
+            VALUES ( $1, $2 )
             "#,
             id,
             group_id,
