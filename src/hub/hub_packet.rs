@@ -11,12 +11,12 @@ pub enum HubPackage {
         message: String,
     },
     NotifyGroup {
-        group_id: String,
+        group_name: String,
         message: String,
     },
     AddClient {
         user_id: String,
-        group_id: Option<String>,
+        group_name: Option<String>,
         client: SseClient,
     },
 }

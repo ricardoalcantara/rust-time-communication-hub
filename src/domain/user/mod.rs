@@ -13,6 +13,6 @@ pub fn route() -> Router {
             "/api/user",
             get(self::controller::empty).post(self::controller::add_user),
         )
-        .route("/api/user/{user_id}", delete(self::controller::empty))
-        .route("/api/user/{user_id}/token", get(self::controller::empty))
+        .route("/api/user/:user_id", delete(self::controller::empty))
+        .route("/api/user/:user_id/token", get(self::controller::token))
 }

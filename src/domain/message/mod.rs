@@ -6,6 +6,6 @@ pub mod service;
 
 pub fn route() -> Router {
     Router::new()
-        .route("/api/message/notify", post(self::controller::sse))
-        .route("/api/message/acknowledge", post(self::controller::sse))
+        .route("/api/message/notify", post(self::controller::notify))
+        .route("/api/message/acknowledge", post(self::controller::empty))
 }

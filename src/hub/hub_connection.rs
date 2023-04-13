@@ -16,14 +16,14 @@ impl HubConnection {
     pub async fn new_client(
         &self,
         user_id: String,
-        group_id: Option<String>,
+        group_name: Option<String>,
     ) -> Receiver<Result<Event, Infallible>> {
         let (tx, rx) = tokio::sync::mpsc::channel::<Result<Event, Infallible>>(4);
 
         self.tx
             .send(HubPackage::AddClient {
                 user_id,
-                group_id,
+                group_name,
                 client: tx,
             })
             .await
@@ -38,9 +38,12 @@ impl HubConnection {
             .await
             .unwrap()
     }
-    pub async fn notify_group(&self, group_id: String, message: String) {
+    pub async fn notify_group(&self, group_name: String, message: String) {
         self.tx
-            .send(HubPackage::NotifyGroup { group_id, message })
+            .send(HubPackage::NotifyGroup {
+                group_name,
+                message,
+            })
             .await
             .unwrap()
     }

@@ -1,0 +1,346 @@
+{
+  "db": "PostgreSQL",
+  "056ab352c0d8706a394293ff2b78ddc724b16cdd23fbc35f15b7a64b79b3e903": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "external_id",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 2,
+          "type_info": "Timestamp"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "SELECT * FROM public.user WHERE id = $1"
+  },
+  "0fedcb88759a29ad8719c6065497b9e5e0399392ef16f7d780f5e0fd36ae83a3": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "SELECT * FROM public.group WHERE id = $1"
+  },
+  "1d87f327dd81983034e267e0bd6fa927e2afa12f80caee48e4c42c98855661bd": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT id FROM public.group WHERE name = $1"
+  },
+  "53fbc71b3b1d2cc3e362a721f9c6f2729cc9d7fb9e528f24d58dcc4a84fd80fb": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "payload",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 2,
+          "type_info": "Timestamp"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        SELECT m.* from public.message m \n        INNER JOIN public.user_message um on um.message_id = m.id \n        INNER JOIN public.user u on u.id = um.user_id  \n        WHERE u.external_id = $1 \n            "
+  },
+  "64ce9091888a0d2ee3816b1f1bfdc5e2bedafd3c32bcabc47973dbc9f66ca755": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n    UPDATE public.message\n    SET payload = $1\n    WHERE id = $2\n            "
+  },
+  "6a76c7af37e4fc184634625e88174a9b2a27751af36d1df2d719c1cb009d8c01": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "DELETE FROM public.message WHERE id = $1"
+  },
+  "6ae34f2212116a14433789a0da1918b5fde36ab3882c212366c068574e7ab632": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n            INSERT INTO user_message (user_id, message_id) \n            SELECT u.id, $1 FROM public.user u\n            INNER JOIN public.user_group ug ON ug.user_id = u.id \n            INNER JOIN public.group g  ON g.id  = ug.group_id\n            WHERE g.name = $2\n            "
+  },
+  "745ccb3ebeddb3890b9fe365739196b7fcf6e2d583850a4bb53fa5cc51d397ab": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Varchar"
+        ]
+      }
+    },
+    "query": "\n    INSERT INTO public.group ( name )\n    VALUES ( $1 )\n    RETURNING id\n            "
+  },
+  "7495ddbd8c82377ec33ad79ceb4fcb32c1060fb553e5ffa3a589f81bd07a049f": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Timestamp"
+        ]
+      }
+    },
+    "query": "\n    INSERT INTO public.message ( payload, created_at )\n    VALUES ( $1, $2 )\n    RETURNING id\n            "
+  },
+  "7928a48c823a96e2bc9331f783fed60c71d7ef657bb287908551003ca2185398": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "DELETE FROM public.group WHERE id = $1"
+  },
+  "9952898e063f305e9b52008bf46ca3f4c74cdb0262309c2888848b27883b7d86": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n            INSERT INTO public.user_message (user_id, message_id)\n            VALUES ( $1, $2 )\n            "
+  },
+  "9ab36932fbaa8bcf325934ec0b2b9ce0ea8babe47324801ed07810889038eb40": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "payload",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 2,
+          "type_info": "Timestamp"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "SELECT * FROM public.message WHERE id = $1"
+  },
+  "c0566555914bf56071a1187dece2b114c6bf1f1b3d9c5da2e90626834b271786": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "DELETE FROM public.user WHERE id = $1"
+  },
+  "d003b2fbde49384f0a5a794b976d03536e6e1aa393a12203786a4754e6545bcb": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n            INSERT INTO public.user_group (user_id, group_id)\n            VALUES ( $1, $2 )\n            "
+  },
+  "e26c3d705dcc115acba1026fe7bcf66db5227cce84407b63f8fe34fe1beea419": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Timestamp"
+        ]
+      }
+    },
+    "query": "\n    INSERT INTO public.user ( external_id, created_at )\n    VALUES ( $1, $2 )\n    RETURNING id\n            "
+  },
+  "f1b8be295aec407417d87e74f4c7727191de4939359746703fa0c663817a0007": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT id FROM public.user WHERE external_id = $1"
+  },
+  "f28e8f994dbaf925b70a7d5ee110017df1bd54dbfc665acf0e9d7123b250188d": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n    UPDATE public.group\n    SET name = $1\n    WHERE id = $2\n            "
+  },
+  "fffae752d222228bcf38f71c8e5ad1b13bf97458f4d846a0e2ebd6099cc164ab": {
+    "describe": {
+      "columns": [
+        {
+          "name": "test",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT (1) as test"
+  }
+}

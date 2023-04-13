@@ -14,3 +14,22 @@ services:
     restart: always
     ports:
       - 8080:8080
+  mysql:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: rust_time_communication_hub
+    ports: 
+      - 3307:3306
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: rust_time_communication_hub
+    ports: 
+      - 5432:5432

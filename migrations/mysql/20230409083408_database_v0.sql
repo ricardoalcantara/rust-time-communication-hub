@@ -18,18 +18,16 @@ CREATE TABLE `message` (
 CREATE TABLE `user_message` (
   `user_id` integer NOT NULL,
   `message_id` integer NOT NULL,
-  `read` bool NOT NULL
+  `read` bool NOT NULL DEFAULT 0,
+  PRIMARY KEY(`user_id`, `message_id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  FOREIGN KEY (`message_id`) REFERENCES `message` (`id`)
 );
 
 CREATE TABLE `user_group` (
   `user_id` integer NOT NULL,
-  `group_id` integer NOT NULL
+  `group_id` integer NOT NULL,
+  PRIMARY KEY(`user_id`, `group_id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  FOREIGN KEY (`group_id`) REFERENCES `group` (`id`)
 );
-
-ALTER TABLE `user_message` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
-
-ALTER TABLE `user_message` ADD FOREIGN KEY (`message_id`) REFERENCES `message` (`id`);
-
-ALTER TABLE `user_group` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
-
-ALTER TABLE `user_group` ADD FOREIGN KEY (`group_id`) REFERENCES `group` (`id`);

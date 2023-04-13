@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
 use axum::{
-    extract::rejection::TypedHeaderRejection,
     http::StatusCode,
     response::{IntoResponse, Response},
     Json,
