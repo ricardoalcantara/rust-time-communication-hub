@@ -188,3 +188,95 @@ impl UserRepository for RepositoryBase {
         Ok(rows_affected)
     }
 }
+
+#[cfg(feature = "sqlite")]
+#[async_trait]
+impl UserRepository for RepositoryBase {
+    async fn user_insert(&self, user: &User) -> RepositoryResult<i32> {
+        let user_id = sqlx::query!(
+            r#"
+    INSERT INTO user ( external_id, created_at )
+    VALUES ( ?, ? )
+            "#,
+            user.external_id,
+            user.created_at
+        )
+        .execute(&self.pool)
+        .await?
+        .last_insert_rowid();
+
+        Ok(user_id as i32)
+    }
+
+    async fn user_insert_if_not_exists(&self, user: &User) -> RepositoryResult<i32> {
+        if let Some(user_id) = self.user_get_id(&user.external_id).await? {
+            return Ok(user_id);
+        }
+
+        self.user_insert(user).await
+    }
+
+    async fn user_get_id(&self, external_id: &str) -> RepositoryResult<Option<i32>> {
+        let row = sqlx::query!(
+            r#"SELECT id as "id!" FROM user WHERE external_id = ?"#,
+            external_id
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(row.map(|r| r.id as i32))
+    }
+
+    async fn user_delete(&self, id: i32) -> RepositoryResult<bool> {
+        let rows_affected = sqlx::query!("DELETE FROM user WHERE id = ?", id)
+            .execute(&self.pool)
+            .await?
+            .rows_affected();
+
+        Ok(rows_affected > 0)
+    }
+
+    async fn user_select(&self, id: i32) -> RepositoryResult<Option<User>> {
+        let row = sqlx::query_as!(
+            User,
+            r#"SELECT id as "id:i32", external_id, created_at FROM user WHERE id = ?"#,
+            id
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(row)
+    }
+
+    async fn user_attach_message(&self, id: i32, message_id: i32) -> RepositoryResult<u64> {
+        let rows_affected = sqlx::query!(
+            r#"
+            INSERT INTO user_message (user_id, message_id)
+            VALUES ( ? ,? )
+            "#,
+            id,
+            message_id,
+        )
+        .execute(&self.pool)
+        .await?
+        .rows_affected();
+
+        Ok(rows_affected)
+    }
+
+    async fn user_attach_group(&self, id: i32, group_id: i32) -> RepositoryResult<u64> {
+        let rows_affected = sqlx::query!(
+            r#"
+            INSERT INTO user_group (user_id, group_id)
+            VALUES ( ? ,? )
+            "#,
+            id,
+            group_id,
+        )
+        .execute(&self.pool)
+        .await?
+        .rows_affected();
+
+        Ok(rows_affected)
+    }
+}
