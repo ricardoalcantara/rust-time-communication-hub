@@ -36,5 +36,5 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/ricardoalcantara/rust-time-communication-hub:${{ steps.extract_branch.outputs.branch }}-latest
-            ghcr.io/ricardoalcantara/rust-time-communication-hub:${{ steps.extract_branch.outputs.branch }}-${{ steps.date.outputs.date }}
+            ghcr.io/ricardoalcantara/rust-time-communication-hub:${{ steps.extract_branch.outputs.branch }}-sqlite-latest
+            ghcr.io/ricardoalcantara/rust-time-communication-hub:${{ steps.extract_branch.outputs.branch }}-sqlite-${{ steps.date.outputs.date }}
