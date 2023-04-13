@@ -1,0 +1,281 @@
+{
+  "db": "SQLite",
+  "025f87b4fe6f4a638cd7e1fb97601fad72022dad18375d49d302c4dfc3dbf45e": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "DELETE FROM message WHERE id = ?"
+  },
+  "02a7b61948ac8f289944d4745be89360012be2d2864a7b5407a80d1391f2929c": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "\n    INSERT INTO user ( external_id, created_at )\n    VALUES ( ?, ? )\n            "
+  },
+  "0e2d98ffc9f9ea4706e664a39691b98d046b94e7b725b4375d402ed031897781": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id:i32",
+          "ordinal": 0,
+          "type_info": "Int64"
+        },
+        {
+          "name": "external_id",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 2,
+          "type_info": "Datetime"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT id as \"id:i32\", external_id, created_at FROM user WHERE id = ?"
+  },
+  "0f1475ff30b81fb82fb9f8c84c766b105db4912a88c9b1eba0449be3870a94e7": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "DELETE FROM user WHERE id = ?"
+  },
+  "4311f115400a13a4c25e29f520c1074c48bfa7b0ef6ec247449d8aaab111549c": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "\n    INSERT INTO `group` ( name )\n    VALUES ( ? )\n            "
+  },
+  "8bf5d792922fe5640430c6181a55e9f5e460424b70d3030b7fa0ba69afd69815": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "\n    INSERT INTO message ( payload, created_at )\n    VALUES ( ?, ? )\n            "
+  },
+  "9aad56d859fcbf75e346cc545db49e566c7f74b40a8cb53c4e496534df7dbec2": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id:i32",
+          "ordinal": 0,
+          "type_info": "Int64"
+        },
+        {
+          "name": "payload",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 2,
+          "type_info": "Datetime"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT id as \"id:i32\", payload, created_at FROM message WHERE id = ?"
+  },
+  "9ad3a03475c567cccb7ba0bf1c76de0b83c7f5017fff9c74249fa342bc486be9": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "\n    UPDATE `group`\n    SET name = ?\n    WHERE id = ?\n            "
+  },
+  "9c38a0bca724af37b50e1715ff3c61067ffe5622e293c5d5c73fd7766a91052f": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id:i32",
+          "ordinal": 0,
+          "type_info": "Int64"
+        },
+        {
+          "name": "payload",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 2,
+          "type_info": "Datetime"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "\n        SELECT m.id as \"id:i32\", m.payload, m.created_at from message m \n        INNER JOIN user_message um on um.message_id = m.id \n        INNER JOIN `user` u on u.id = um.user_id  \n        WHERE u.external_id = ? \n            "
+  },
+  "b05e09e1b339dc43b42860b3d4c35478f92d71beb78b9770b8181534af36867e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id!",
+          "ordinal": 0,
+          "type_info": "Int64"
+        }
+      ],
+      "nullable": [
+        true
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT id  as \"id!\" FROM `group` WHERE name = ?"
+  },
+  "c4abdd999e5260602e24af9e65109939e41ef4e064a642f7803aff576ae5f8d6": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "\n            INSERT INTO user_message (user_id, message_id)\n            VALUES ( ? ,? )\n            "
+  },
+  "d6be95ed0dc794b1561504e00d2488b9ba295c44a5676c66751465f1009add6d": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id!",
+          "ordinal": 0,
+          "type_info": "Int64"
+        }
+      ],
+      "nullable": [
+        true
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT id as \"id!\" FROM user WHERE external_id = ?"
+  },
+  "d992dd345be0b66b25750b5475ccb318a9e77e08d085636254bc022f04d2b29e": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "DELETE FROM `group` WHERE id = ?"
+  },
+  "e81fd8961c3855f09d0676e29252ac8bcd131b5574bf766f6a09ce17b82335f8": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "\n    UPDATE message\n    SET payload = ?\n    WHERE id = ?\n            "
+  },
+  "e83faf5cf0446dd9d193193398103f38aa73ee52cd41604823a0c99ca6f9784d": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id:i32",
+          "ordinal": 0,
+          "type_info": "Int64"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT id  as \"id:i32\", name FROM `group` WHERE id = ?"
+  },
+  "f70eeac973d9a748596395644411da3aadb60a7656b9e2f0d9f5f5b216623c46": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "\n            INSERT INTO user_message (user_id, message_id) \n            SELECT u.id, ? FROM `user` u\n            INNER JOIN `user_group` ug ON ug.user_id = u.id \n            INNER JOIN `group` g  ON g.id  = ug.group_id\n            WHERE g.name = ?\n            "
+  },
+  "fe3b225f40db1eefb876a4f3bd33d13ebee759cc716c43fdec55e6b804e64dbc": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "\n            INSERT INTO user_group (user_id, group_id)\n            VALUES ( ? ,? )\n            "
+  },
+  "fffae752d222228bcf38f71c8e5ad1b13bf97458f4d846a0e2ebd6099cc164ab": {
+    "describe": {
+      "columns": [
+        {
+          "name": "test",
+          "ordinal": 0,
+          "type_info": "Int"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Right": 0
+      }
+    },
+    "query": "SELECT (1) as test"
+  }
+}

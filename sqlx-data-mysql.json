@@ -161,6 +161,57 @@
     },
     "query": "\n    UPDATE `group`\n    SET name = ?\n    WHERE id = ?\n            "
   },
+  "a14e05c810043d229cc27cca33999936a3948418ded14f52e6cfe0b9442ddd8b": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 515
+            },
+            "max_size": 11,
+            "type": "Long"
+          }
+        },
+        {
+          "name": "payload",
+          "ordinal": 1,
+          "type_info": {
+            "char_set": 224,
+            "flags": {
+              "bits": 4097
+            },
+            "max_size": 1020,
+            "type": "VarString"
+          }
+        },
+        {
+          "name": "created_at",
+          "ordinal": 2,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 4225
+            },
+            "max_size": 19,
+            "type": "Datetime"
+          }
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "\n        SELECT m.* from message m \n        INNER JOIN user_message um on um.message_id = m.id \n        INNER JOIN `user` u on u.id = um.user_id  \n        WHERE u.external_id = ? \n            "
+  },
   "b9ec2211672bc544b95281318be44056c7e74dc07c5914d9fbbfd46b3e1cffb9": {
     "describe": {
       "columns": [
@@ -211,6 +262,16 @@
       }
     },
     "query": "SELECT * FROM user WHERE id = ?"
+  },
+  "c4abdd999e5260602e24af9e65109939e41ef4e064a642f7803aff576ae5f8d6": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "\n            INSERT INTO user_message (user_id, message_id)\n            VALUES ( ? ,? )\n            "
   },
   "d42ae8823768cd72acc6cbabebf74887cac0289a29079b4301b109d25273dcc2": {
     "describe": {
@@ -269,6 +330,26 @@
       }
     },
     "query": "\n    UPDATE message\n    SET payload = ?\n    WHERE id = ?\n            "
+  },
+  "f70eeac973d9a748596395644411da3aadb60a7656b9e2f0d9f5f5b216623c46": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "\n            INSERT INTO user_message (user_id, message_id) \n            SELECT u.id, ? FROM `user` u\n            INNER JOIN `user_group` ug ON ug.user_id = u.id \n            INNER JOIN `group` g  ON g.id  = ug.group_id\n            WHERE g.name = ?\n            "
+  },
+  "fe3b225f40db1eefb876a4f3bd33d13ebee759cc716c43fdec55e6b804e64dbc": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "\n            INSERT INTO user_group (user_id, group_id)\n            VALUES ( ? ,? )\n            "
   },
   "fffae752d222228bcf38f71c8e5ad1b13bf97458f4d846a0e2ebd6099cc164ab": {
     "describe": {
